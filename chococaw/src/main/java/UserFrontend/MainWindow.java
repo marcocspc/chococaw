@@ -5,8 +5,11 @@
  */
 package UserFrontend;
 
+import Domain.Config;
 import Domain.Nupkg;
 import java.awt.AWTException;
+import java.awt.Color;
+import java.awt.Font;
 import java.awt.Rectangle;
 import javax.swing.DefaultListModel;
 import javax.swing.JComponent;
@@ -192,8 +195,8 @@ public class MainWindow extends javax.swing.JFrame {
 
                 setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
                 setTitle("Cacao");
-                setMinimumSize(new java.awt.Dimension(1100, 900));
-                setPreferredSize(new java.awt.Dimension(1100, 900));
+                setMinimumSize(new java.awt.Dimension(1200, 900));
+                setPreferredSize(new java.awt.Dimension(1200, 900));
                 setResizable(false);
 
                 idField.setFont(new java.awt.Font("Lucida Grande", 2, 13)); // NOI18N
@@ -491,9 +494,19 @@ public class MainWindow extends javax.swing.JFrame {
 
                 sendBtn.setText("Send");
                 sendBtn.setPreferredSize(new java.awt.Dimension(100, 29));
+                sendBtn.addActionListener(new java.awt.event.ActionListener() {
+                        public void actionPerformed(java.awt.event.ActionEvent evt) {
+                                sendBtnActionPerformed(evt);
+                        }
+                });
 
                 exampleBtn.setText("Example");
                 exampleBtn.setPreferredSize(new java.awt.Dimension(100, 29));
+                exampleBtn.addActionListener(new java.awt.event.ActionListener() {
+                        public void actionPerformed(java.awt.event.ActionEvent evt) {
+                                exampleBtnActionPerformed(evt);
+                        }
+                });
 
                 javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
                 jPanel3.setLayout(jPanel3Layout);
@@ -703,6 +716,14 @@ public class MainWindow extends javax.swing.JFrame {
 		}
         }//GEN-LAST:event_newBtnActionPerformed
 
+        private void sendBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sendBtnActionPerformed
+		JOptionPane.showMessageDialog(null, "Not implemented yet.");
+        }//GEN-LAST:event_sendBtnActionPerformed
+
+        private void exampleBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exampleBtnActionPerformed
+		this.setExample();
+        }//GEN-LAST:event_exampleBtnActionPerformed
+
 	/**
 	 * @param args the command line arguments
 	 */
@@ -781,10 +802,12 @@ public class MainWindow extends javax.swing.JFrame {
 			Rectangle bounds = jtf.getBounds();
 			bounds.setLocation(SwingUtilities.convertPoint(jtf, bounds.getLocation(), jtf.getParent()));
 			jtf.setText("");
+			this.setFilledFont(jtf);
 			JComponent parent = (JComponent) jtf.getParent();
 			parent.scrollRectToVisible(bounds);
 		} else if (jtf.getText().equals("") && !jtf.getText().equals(defaultText)) {
 			jtf.setText(defaultText);
+			this.setDefaultFont(jtf);
 		}
 	}
 
@@ -806,5 +829,66 @@ public class MainWindow extends javax.swing.JFrame {
 		unattendedArgumentsField.setText(MainWindow.TEXT_UNATTENDED_ARGUMENTS);
 		x86InstallerField.setText(MainWindow.TEXT_INTALLER_X86);
 		x64InstallerField.setText(MainWindow.TEXT_INTALLER_X64);
+
+		this.setDefaultFont(idField);
+		this.setDefaultFont(titleField);
+		this.setDefaultFont(versionField);
+		this.setDefaultFont(authorsField);
+		this.setDefaultFont(ownersField);
+		this.setDefaultFont(summaryField);
+		this.setDefaultFont(projectURLField);
+		this.setDefaultFont(licenseURLField);
+		this.setDefaultFont(iconURLField);
+		this.setDefaultFont(tagsField);
+		this.setDefaultFont(dependenciesField);
+		this.setDefaultFont(installerTypeField);
+		this.setDefaultFont(unattendedArgumentsField);
+		this.setDefaultFont(x86InstallerField);
+		this.setDefaultFont(x64InstallerField);
+	}
+
+	private void setExample() {
+		idField.setText(Config.DEFAULT_EXAMPLE_TEXT_ID);
+		titleField.setText(Config.DEFAULT_EXAMPLE_TEXT_TITLE);
+		versionField.setText(Config.DEFAULT_EXAMPLE_TEXT_VERSION);
+		authorsField.setText(Config.DEFAULT_EXAMPLE_TEXT_AUTHORS);
+		ownersField.setText(Config.DEFAULT_EXAMPLE_TEXT_OWNERS);
+		summaryField.setText(Config.DEFAULT_EXAMPLE_TEXT_SUMMARY);
+		projectURLField.setText(Config.DEFAULT_EXAMPLE_TEXT_PROJECT_URL);
+		licenseURLField.setText(Config.DEFAULT_EXAMPLE_TEXT_LICENSE_URL);
+		iconURLField.setText(Config.DEFAULT_EXAMPLE_TEXT_ICON_URL);
+		tagsField.setText(Config.DEFAULT_EXAMPLE_TEXT_TAGS);
+		dependenciesField.setText(Config.DEFAULT_EXAMPLE_TEXT_DEPENDENCIES);
+		installerTypeField.setText(Config.DEFAULT_EXAMPLE_TEXT_INSTALLER_TYPE);
+		unattendedArgumentsField.setText(Config.DEFAULT_EXAMPLE_TEXT_UNATTENDED_ARGUMENTS);
+		x86InstallerField.setText(Config.DEFAULT_EXAMPLE_TEXT_INTALLER_X86);
+		x64InstallerField.setText(Config.DEFAULT_EXAMPLE_TEXT_INTALLER_X64);
+
+		this.setFilledFont(idField);
+		this.setFilledFont(titleField);
+		this.setFilledFont(versionField);
+		this.setFilledFont(authorsField);
+		this.setFilledFont(ownersField);
+		this.setFilledFont(summaryField);
+		this.setFilledFont(projectURLField);
+		this.setFilledFont(licenseURLField);
+		this.setFilledFont(iconURLField);
+		this.setFilledFont(tagsField);
+		this.setFilledFont(installerTypeField);
+		this.setFilledFont(unattendedArgumentsField);
+	}
+
+	private void setFilledFont(JTextField jtf) {
+		Font font = new Font("Tahoma", Font.PLAIN, 13);
+
+		jtf.setFont(font);
+		jtf.setForeground(Color.BLACK);
+	}
+
+	private void setDefaultFont(JTextField jtf) {
+		Font font = new Font("Lucida", Font.ITALIC, 13);
+
+		jtf.setFont(font);
+		jtf.setForeground(new Color(204, 204, 204));
 	}
 }
