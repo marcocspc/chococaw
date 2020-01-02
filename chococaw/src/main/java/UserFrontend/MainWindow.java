@@ -5,6 +5,8 @@
  */
 package UserFrontend;
 
+import Domain.Nupkg;
+import java.awt.AWTException;
 import java.awt.Rectangle;
 import javax.swing.DefaultListModel;
 import javax.swing.JComponent;
@@ -13,6 +15,11 @@ import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
+import java.util.regex.Pattern;
+import java.awt.Robot;
+import java.awt.event.KeyEvent;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -23,6 +30,8 @@ public class MainWindow extends javax.swing.JFrame {
 	/**
 	 * Creates new form MainWindow
 	 */
+	public static Nupkg nupkg;
+
 	public static String TEXT_ID = "ID";
 	public static String TEXT_TITLE = "Title";
 	public static String TEXT_VERSION = "Version";
@@ -33,8 +42,11 @@ public class MainWindow extends javax.swing.JFrame {
 	public static String TEXT_LICENSE_URL = "License URL";
 	public static String TEXT_ICON_URL = "Icon URL";
 	public static String TEXT_TAGS = "Tags";
+	public static String TEXT_DEPENDENCIES = "Dependencies";
 	public static String TEXT_INSTALLER_TYPE = "Installer Type";
 	public static String TEXT_UNATTENDED_ARGUMENTS = "Unattended Arguments";
+	public static String TEXT_INTALLER_X86 = "32-bit Installer";
+	public static String TEXT_INTALLER_X64 = "64-bit Installer";
 
 	public MainWindow() {
 		initComponents();
@@ -45,7 +57,9 @@ public class MainWindow extends javax.swing.JFrame {
 			JOptionPane.showMessageDialog(rootPane, "Error!\n" + ex.getMessage());
 		}
 
+		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		this.setLocationRelativeTo(null);
+		this.setVisible(true);
 	}
 
 	/**
@@ -57,7 +71,13 @@ public class MainWindow extends javax.swing.JFrame {
         // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
         private void initComponents() {
 
-                jComboBox1 = new javax.swing.JComboBox<>();
+                dialogDep = new javax.swing.JDialog();
+                jPanel4 = new javax.swing.JPanel();
+                fieldDep = new javax.swing.JTextField();
+                btnAddDep = new javax.swing.JButton();
+                jScrollPane1 = new javax.swing.JScrollPane();
+                listDep = new javax.swing.JList<>();
+                btnRemDep = new javax.swing.JButton();
                 jPanel1 = new javax.swing.JPanel();
                 jScrollPane3 = new javax.swing.JScrollPane();
                 jPanel2 = new javax.swing.JPanel();
@@ -87,12 +107,93 @@ public class MainWindow extends javax.swing.JFrame {
                 sendBtn = new javax.swing.JButton();
                 exampleBtn = new javax.swing.JButton();
 
-                jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+                dialogDep.setMinimumSize(new java.awt.Dimension(412, 300));
+                dialogDep.setModal(true);
+
+                fieldDep.addFocusListener(new java.awt.event.FocusAdapter() {
+                        public void focusLost(java.awt.event.FocusEvent evt) {
+                                fieldDepFocusLost(evt);
+                        }
+                });
+                fieldDep.addKeyListener(new java.awt.event.KeyAdapter() {
+                        public void keyTyped(java.awt.event.KeyEvent evt) {
+                                fieldDepKeyTyped(evt);
+                        }
+                });
+
+                btnAddDep.setText("+");
+                btnAddDep.addActionListener(new java.awt.event.ActionListener() {
+                        public void actionPerformed(java.awt.event.ActionEvent evt) {
+                                btnAddDepActionPerformed(evt);
+                        }
+                });
+
+                listDep.setModel(new DefaultListModel());
+                jScrollPane1.setViewportView(listDep);
+
+                btnRemDep.setText("-");
+                btnRemDep.addActionListener(new java.awt.event.ActionListener() {
+                        public void actionPerformed(java.awt.event.ActionEvent evt) {
+                                btnRemDepActionPerformed(evt);
+                        }
+                });
+
+                javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
+                jPanel4.setLayout(jPanel4Layout);
+                jPanel4Layout.setHorizontalGroup(
+                        jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel4Layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 345, Short.MAX_VALUE)
+                                        .addComponent(fieldDep))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                        .addComponent(btnAddDep, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(btnRemDep, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                );
+                jPanel4Layout.setVerticalGroup(
+                        jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel4Layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(fieldDep, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(btnAddDep))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 249, Short.MAX_VALUE)
+                                        .addGroup(jPanel4Layout.createSequentialGroup()
+                                                .addComponent(btnRemDep)
+                                                .addGap(0, 0, Short.MAX_VALUE)))
+                                .addContainerGap())
+                );
+
+                javax.swing.GroupLayout dialogDepLayout = new javax.swing.GroupLayout(dialogDep.getContentPane());
+                dialogDep.getContentPane().setLayout(dialogDepLayout);
+                dialogDepLayout.setHorizontalGroup(
+                        dialogDepLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGap(0, 412, Short.MAX_VALUE)
+                        .addGroup(dialogDepLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(dialogDepLayout.createSequentialGroup()
+                                        .addGap(0, 0, Short.MAX_VALUE)
+                                        .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(0, 0, Short.MAX_VALUE)))
+                );
+                dialogDepLayout.setVerticalGroup(
+                        dialogDepLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGap(0, 300, Short.MAX_VALUE)
+                        .addGroup(dialogDepLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(dialogDepLayout.createSequentialGroup()
+                                        .addGap(0, 0, Short.MAX_VALUE)
+                                        .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(0, 0, Short.MAX_VALUE)))
+                );
 
                 setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
                 setTitle("Cacao");
-                setMinimumSize(new java.awt.Dimension(1000, 900));
-                setPreferredSize(new java.awt.Dimension(1000, 900));
+                setMinimumSize(new java.awt.Dimension(1100, 900));
+                setPreferredSize(new java.awt.Dimension(1100, 900));
                 setResizable(false);
 
                 idField.setFont(new java.awt.Font("Lucida Grande", 2, 13)); // NOI18N
@@ -161,7 +262,7 @@ public class MainWindow extends javax.swing.JFrame {
                 summaryField.setText("Summary");
                 summaryField.addFocusListener(new java.awt.event.FocusAdapter() {
                         public void focusGained(java.awt.event.FocusEvent evt) {
-                                installerTypeFieldFocusGained(evt);
+                                summaryFieldFocusGained(evt);
                         }
                         public void focusLost(java.awt.event.FocusEvent evt) {
                                 summaryFieldFocusLost(evt);
@@ -173,10 +274,10 @@ public class MainWindow extends javax.swing.JFrame {
                 projectURLField.setText("Project URL");
                 projectURLField.addFocusListener(new java.awt.event.FocusAdapter() {
                         public void focusGained(java.awt.event.FocusEvent evt) {
-                                installerTypeFieldFocusGained(evt);
+                                projectURLFieldFocusGained(evt);
                         }
                         public void focusLost(java.awt.event.FocusEvent evt) {
-                                installerTypeFieldFocusLost(evt);
+                                projectURLFieldFocusLost(evt);
                         }
                 });
 
@@ -185,10 +286,10 @@ public class MainWindow extends javax.swing.JFrame {
                 licenseURLField.setText("License URL");
                 licenseURLField.addFocusListener(new java.awt.event.FocusAdapter() {
                         public void focusGained(java.awt.event.FocusEvent evt) {
-                                installerTypeFieldFocusGained(evt);
+                                licenseURLFieldFocusGained(evt);
                         }
                         public void focusLost(java.awt.event.FocusEvent evt) {
-                                installerTypeFieldFocusLost(evt);
+                                licenseURLFieldFocusLost(evt);
                         }
                 });
 
@@ -197,10 +298,10 @@ public class MainWindow extends javax.swing.JFrame {
                 iconURLField.setText("Icon URL");
                 iconURLField.addFocusListener(new java.awt.event.FocusAdapter() {
                         public void focusGained(java.awt.event.FocusEvent evt) {
-                                installerTypeFieldFocusGained(evt);
+                                iconURLFieldFocusGained(evt);
                         }
                         public void focusLost(java.awt.event.FocusEvent evt) {
-                                installerTypeFieldFocusLost(evt);
+                                iconURLFieldFocusLost(evt);
                         }
                 });
 
@@ -209,10 +310,10 @@ public class MainWindow extends javax.swing.JFrame {
                 tagsField.setText("Tags");
                 tagsField.addFocusListener(new java.awt.event.FocusAdapter() {
                         public void focusGained(java.awt.event.FocusEvent evt) {
-                                installerTypeFieldFocusGained(evt);
+                                tagsFieldFocusGained(evt);
                         }
                         public void focusLost(java.awt.event.FocusEvent evt) {
-                                installerTypeFieldFocusLost(evt);
+                                tagsFieldFocusLost(evt);
                         }
                 });
 
@@ -222,6 +323,11 @@ public class MainWindow extends javax.swing.JFrame {
                 dependenciesField.setText("Dependencies");
 
                 dependenciesButton.setText("...");
+                dependenciesButton.addActionListener(new java.awt.event.ActionListener() {
+                        public void actionPerformed(java.awt.event.ActionEvent evt) {
+                                dependenciesButtonActionPerformed(evt);
+                        }
+                });
 
                 installerTypeField.setFont(new java.awt.Font("Lucida Grande", 2, 13)); // NOI18N
                 installerTypeField.setForeground(new java.awt.Color(153, 153, 153));
@@ -240,10 +346,10 @@ public class MainWindow extends javax.swing.JFrame {
                 unattendedArgumentsField.setText("Unattended Arguments");
                 unattendedArgumentsField.addFocusListener(new java.awt.event.FocusAdapter() {
                         public void focusGained(java.awt.event.FocusEvent evt) {
-                                installerTypeFieldFocusGained(evt);
+                                unattendedArgumentsFieldFocusGained(evt);
                         }
                         public void focusLost(java.awt.event.FocusEvent evt) {
-                                installerTypeFieldFocusLost(evt);
+                                unattendedArgumentsFieldFocusLost(evt);
                         }
                 });
 
@@ -279,7 +385,7 @@ public class MainWindow extends javax.swing.JFrame {
                                         .addGroup(jPanel2Layout.createSequentialGroup()
                                                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                                         .addComponent(dependenciesField, javax.swing.GroupLayout.Alignment.TRAILING)
-                                                        .addComponent(x86InstallerField, javax.swing.GroupLayout.DEFAULT_SIZE, 806, Short.MAX_VALUE)
+                                                        .addComponent(x86InstallerField, javax.swing.GroupLayout.DEFAULT_SIZE, 1006, Short.MAX_VALUE)
                                                         .addComponent(x64InstallerField))
                                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -337,7 +443,7 @@ public class MainWindow extends javax.swing.JFrame {
                                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                         .addComponent(x64InstallerField, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addComponent(button64BitInstaller, javax.swing.GroupLayout.DEFAULT_SIZE, 41, Short.MAX_VALUE))
-                                .addContainerGap(57, Short.MAX_VALUE))
+                                .addContainerGap(58, Short.MAX_VALUE))
                 );
 
                 jScrollPane3.setViewportView(jPanel2);
@@ -353,30 +459,40 @@ public class MainWindow extends javax.swing.JFrame {
                         .addComponent(jScrollPane3)
                 );
 
-                newBtn.setText("jButton1");
+                newBtn.setText("New");
                 newBtn.setMaximumSize(new java.awt.Dimension(100, 29));
                 newBtn.setMinimumSize(new java.awt.Dimension(100, 29));
                 newBtn.setPreferredSize(new java.awt.Dimension(100, 29));
+                newBtn.addActionListener(new java.awt.event.ActionListener() {
+                        public void actionPerformed(java.awt.event.ActionEvent evt) {
+                                newBtnActionPerformed(evt);
+                        }
+                });
 
-                openBtn.setText("jButton2");
+                openBtn.setText("Open");
                 openBtn.setMaximumSize(new java.awt.Dimension(100, 29));
                 openBtn.setMinimumSize(new java.awt.Dimension(100, 29));
                 openBtn.setPreferredSize(new java.awt.Dimension(100, 29));
 
-                saveBtn.setText("jButton3");
+                saveBtn.setText("Save");
                 saveBtn.setMaximumSize(new java.awt.Dimension(100, 29));
                 saveBtn.setMinimumSize(new java.awt.Dimension(100, 29));
                 saveBtn.setPreferredSize(new java.awt.Dimension(100, 29));
 
-                sairBtn.setText("jButton4");
+                sairBtn.setText("Exit");
                 sairBtn.setMaximumSize(new java.awt.Dimension(100, 29));
                 sairBtn.setMinimumSize(new java.awt.Dimension(100, 29));
                 sairBtn.setPreferredSize(new java.awt.Dimension(100, 29));
+                sairBtn.addActionListener(new java.awt.event.ActionListener() {
+                        public void actionPerformed(java.awt.event.ActionEvent evt) {
+                                sairBtnActionPerformed(evt);
+                        }
+                });
 
-                sendBtn.setText("jButton1");
+                sendBtn.setText("Send");
                 sendBtn.setPreferredSize(new java.awt.Dimension(100, 29));
 
-                exampleBtn.setText("jButton1");
+                exampleBtn.setText("Example");
                 exampleBtn.setPreferredSize(new java.awt.Dimension(100, 29));
 
                 javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
@@ -432,7 +548,7 @@ public class MainWindow extends javax.swing.JFrame {
         }// </editor-fold>//GEN-END:initComponents
 
     private void button64BitInstallerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button64BitInstallerActionPerformed
-	    
+
     }//GEN-LAST:event_button64BitInstallerActionPerformed
 
     private void idFieldFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_idFieldFocusGained
@@ -475,17 +591,117 @@ public class MainWindow extends javax.swing.JFrame {
 		this.defaultActionForTextFieldFocusGained((JTextField) evt.getComponent(), MainWindow.TEXT_OWNERS);
         }//GEN-LAST:event_ownersFieldFocusLost
 
+        private void btnAddDepActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddDepActionPerformed
+		if (Pattern.matches("[a-z]+", fieldDep.getText())) {
+			DefaultListModel dlm = (DefaultListModel) listDep.getModel();
+			dlm.addElement(fieldDep.getText());
+			fieldDep.setText("");
+		} else {
+			JOptionPane.showMessageDialog(dialogDep, "Dependency name must have only lowercase letters.");
+		}
+        }//GEN-LAST:event_btnAddDepActionPerformed
+
+        private void fieldDepKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_fieldDepKeyTyped
+		if (!Pattern.matches("[a-z]+", fieldDep.getText()) && fieldDep.getText().length() > 0) {
+			try {
+				Robot rb = new Robot();
+				rb.keyPress(KeyEvent.VK_BACK_SPACE);
+				rb.keyRelease(KeyEvent.VK_BACK_SPACE);
+			} catch (AWTException ex) {
+				JOptionPane.showMessageDialog(null, ex.getMessage());
+			}
+
+		}
+        }//GEN-LAST:event_fieldDepKeyTyped
+
+        private void btnRemDepActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemDepActionPerformed
+		if (listDep.getSelectedIndex() > -1) {
+			DefaultListModel dlm = (DefaultListModel) listDep.getModel();
+			dlm.remove(listDep.getSelectedIndex());
+		}
+        }//GEN-LAST:event_btnRemDepActionPerformed
+
+        private void dependenciesButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_dependenciesButtonActionPerformed
+		dialogDep.setLocationRelativeTo(null);
+		dialogDep.setVisible(true);
+        }//GEN-LAST:event_dependenciesButtonActionPerformed
+
+        private void fieldDepFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_fieldDepFocusLost
+		if (!Pattern.matches("[a-z]+", fieldDep.getText()) && fieldDep.getText().length() > 0) {
+			fieldDep.setText(fieldDep.getText().substring(0, fieldDep.getText().length() - 1));
+		}
+        }//GEN-LAST:event_fieldDepFocusLost
+
+        private void summaryFieldFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_summaryFieldFocusGained
+		this.defaultActionForTextFieldFocusGained((JTextField) evt.getComponent(), MainWindow.TEXT_SUMMARY);
+        }//GEN-LAST:event_summaryFieldFocusGained
+
+        private void projectURLFieldFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_projectURLFieldFocusGained
+		this.defaultActionForTextFieldFocusGained((JTextField) evt.getComponent(), MainWindow.TEXT_PROJECT_URL);
+        }//GEN-LAST:event_projectURLFieldFocusGained
+
+        private void licenseURLFieldFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_licenseURLFieldFocusGained
+		this.defaultActionForTextFieldFocusGained((JTextField) evt.getComponent(), MainWindow.TEXT_LICENSE_URL);
+        }//GEN-LAST:event_licenseURLFieldFocusGained
+
+        private void iconURLFieldFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_iconURLFieldFocusGained
+		this.defaultActionForTextFieldFocusGained((JTextField) evt.getComponent(), MainWindow.TEXT_ICON_URL);
+        }//GEN-LAST:event_iconURLFieldFocusGained
+
+        private void tagsFieldFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_tagsFieldFocusGained
+		this.defaultActionForTextFieldFocusGained((JTextField) evt.getComponent(), MainWindow.TEXT_TAGS);
+        }//GEN-LAST:event_tagsFieldFocusGained
+
         private void installerTypeFieldFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_installerTypeFieldFocusGained
 		this.defaultActionForTextFieldFocusGained((JTextField) evt.getComponent(), MainWindow.TEXT_INSTALLER_TYPE);
         }//GEN-LAST:event_installerTypeFieldFocusGained
+
+        private void unattendedArgumentsFieldFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_unattendedArgumentsFieldFocusGained
+		this.defaultActionForTextFieldFocusGained((JTextField) evt.getComponent(), MainWindow.TEXT_UNATTENDED_ARGUMENTS);
+        }//GEN-LAST:event_unattendedArgumentsFieldFocusGained
 
         private void summaryFieldFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_summaryFieldFocusLost
 		this.defaultActionForTextFieldFocusGained((JTextField) evt.getComponent(), MainWindow.TEXT_SUMMARY);
         }//GEN-LAST:event_summaryFieldFocusLost
 
+        private void projectURLFieldFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_projectURLFieldFocusLost
+		this.defaultActionForTextFieldFocusGained((JTextField) evt.getComponent(), MainWindow.TEXT_PROJECT_URL);
+        }//GEN-LAST:event_projectURLFieldFocusLost
+
+        private void licenseURLFieldFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_licenseURLFieldFocusLost
+		this.defaultActionForTextFieldFocusGained((JTextField) evt.getComponent(), MainWindow.TEXT_LICENSE_URL);
+        }//GEN-LAST:event_licenseURLFieldFocusLost
+
+        private void iconURLFieldFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_iconURLFieldFocusLost
+		this.defaultActionForTextFieldFocusGained((JTextField) evt.getComponent(), MainWindow.TEXT_ICON_URL);
+        }//GEN-LAST:event_iconURLFieldFocusLost
+
+        private void tagsFieldFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_tagsFieldFocusLost
+		this.defaultActionForTextFieldFocusGained((JTextField) evt.getComponent(), MainWindow.TEXT_TAGS);
+        }//GEN-LAST:event_tagsFieldFocusLost
+
         private void installerTypeFieldFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_installerTypeFieldFocusLost
 		this.defaultActionForTextFieldFocusGained((JTextField) evt.getComponent(), MainWindow.TEXT_INSTALLER_TYPE);
         }//GEN-LAST:event_installerTypeFieldFocusLost
+
+        private void unattendedArgumentsFieldFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_unattendedArgumentsFieldFocusLost
+		this.defaultActionForTextFieldFocusGained((JTextField) evt.getComponent(), MainWindow.TEXT_UNATTENDED_ARGUMENTS);
+        }//GEN-LAST:event_unattendedArgumentsFieldFocusLost
+
+        private void sairBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sairBtnActionPerformed
+		System.exit(0);
+        }//GEN-LAST:event_sairBtnActionPerformed
+
+        private void newBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newBtnActionPerformed
+		int selectedOption = JOptionPane.showConfirmDialog(null,
+			"If you continue, all fields will be erased.",
+			"Are you sure?",
+			JOptionPane.YES_NO_OPTION);
+
+		if (selectedOption == JOptionPane.YES_OPTION) {
+			this.setDefaults();
+		}
+        }//GEN-LAST:event_newBtnActionPerformed
 
 	/**
 	 * @param args the command line arguments
@@ -524,20 +740,26 @@ public class MainWindow extends javax.swing.JFrame {
 
         // Variables declaration - do not modify//GEN-BEGIN:variables
         private javax.swing.JTextField authorsField;
+        private javax.swing.JButton btnAddDep;
+        private javax.swing.JButton btnRemDep;
         private javax.swing.JButton button32BitInstaller;
         private javax.swing.JButton button64BitInstaller;
         private javax.swing.JButton dependenciesButton;
         private javax.swing.JTextField dependenciesField;
+        private javax.swing.JDialog dialogDep;
         private javax.swing.JButton exampleBtn;
+        private javax.swing.JTextField fieldDep;
         private javax.swing.JTextField iconURLField;
         private javax.swing.JTextField idField;
         private javax.swing.JTextField installerTypeField;
-        private javax.swing.JComboBox<String> jComboBox1;
         private javax.swing.JPanel jPanel1;
         private javax.swing.JPanel jPanel2;
         private javax.swing.JPanel jPanel3;
+        private javax.swing.JPanel jPanel4;
+        private javax.swing.JScrollPane jScrollPane1;
         private javax.swing.JScrollPane jScrollPane3;
         private javax.swing.JTextField licenseURLField;
+        private javax.swing.JList<String> listDep;
         private javax.swing.JButton newBtn;
         private javax.swing.JButton openBtn;
         private javax.swing.JTextField ownersField;
@@ -555,7 +777,7 @@ public class MainWindow extends javax.swing.JFrame {
         // End of variables declaration//GEN-END:variables
 
 	private void defaultActionForTextFieldFocusGained(JTextField jtf, String defaultText) {
-		if (!jtf.getText().equals("") && jtf.getText().equals(defaultText)) { 
+		if (!jtf.getText().equals("") && jtf.getText().equals(defaultText)) {
 			Rectangle bounds = jtf.getBounds();
 			bounds.setLocation(SwingUtilities.convertPoint(jtf, bounds.getLocation(), jtf.getParent()));
 			jtf.setText("");
@@ -564,5 +786,25 @@ public class MainWindow extends javax.swing.JFrame {
 		} else if (jtf.getText().equals("") && !jtf.getText().equals(defaultText)) {
 			jtf.setText(defaultText);
 		}
+	}
+
+	private void setDefaults() {
+		MainWindow.nupkg = new Nupkg();
+
+		idField.setText(MainWindow.TEXT_ID);
+		titleField.setText(MainWindow.TEXT_TITLE);
+		versionField.setText(MainWindow.TEXT_VERSION);
+		authorsField.setText(MainWindow.TEXT_AUTHORS);
+		ownersField.setText(MainWindow.TEXT_OWNERS);
+		summaryField.setText(MainWindow.TEXT_SUMMARY);
+		projectURLField.setText(MainWindow.TEXT_PROJECT_URL);
+		licenseURLField.setText(MainWindow.TEXT_LICENSE_URL);
+		iconURLField.setText(MainWindow.TEXT_ICON_URL);
+		tagsField.setText(MainWindow.TEXT_TAGS);
+		dependenciesField.setText(MainWindow.TEXT_DEPENDENCIES);
+		installerTypeField.setText(MainWindow.TEXT_INSTALLER_TYPE);
+		unattendedArgumentsField.setText(MainWindow.TEXT_UNATTENDED_ARGUMENTS);
+		x86InstallerField.setText(MainWindow.TEXT_INTALLER_X86);
+		x64InstallerField.setText(MainWindow.TEXT_INTALLER_X64);
 	}
 }

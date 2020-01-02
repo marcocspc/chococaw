@@ -11,13 +11,13 @@ package Domain;
  */
 public class Config {
     
-    private static final String defaultFTPServerURL = "foo.example.com";
-    private static final String defaultFTPUser = "foo";
-    private static final String defaultFTPPass = "foo123";
-    private static final String defaultFTPPackagesPath = "packages/";
-    private static final String defaultFTPExecutablesPath = "exec/";
-    private static final String defaultHTTPServerURL = defaultFTPServerURL;
-    private static final String defaultHTTPPackagesPath = defaultFTPPackagesPath;
+    private static final String DEFAULT_FTP_SERVER_URL = "foo.example.com";
+    private static final String DEFAULT_FTP_USER = "foo";
+    private static final String DEFAULT_FTP_PASS = "foo123";
+    private static final String DEFAULT_FTP_PACKAGES_PATH = "packages/";
+    private static final String DEFAULT_FTP_EXECUTABLES_PATH = "exec/";
+    private static final String DEFAULT_HTTP_SERVER_URL = DEFAULT_FTP_SERVER_URL;
+    private static final String DEFAULT_HTTP_PACKAGES_PATH = DEFAULT_FTP_PACKAGES_PATH;
     
     private String ftpServerURL;
     private String ftpUser;
@@ -28,13 +28,13 @@ public class Config {
     private String httpPackagesPath;
 
     public Config(){
-        this.ftpServerURL = defaultFTPServerURL;
-        this.ftpUser = defaultFTPUser;
-        this.ftpPass = defaultFTPPass;
-        this.ftpPackagesPath = defaultHTTPPackagesPath;
-        this.ftpExecutablesPath = defaultFTPExecutablesPath;
-        this.httpServerURL = defaultHTTPServerURL;
-        this.httpPackagesPath = defaultHTTPPackagesPath;
+        this.ftpServerURL = DEFAULT_FTP_SERVER_URL;
+        this.ftpUser = DEFAULT_FTP_USER;
+        this.ftpPass = DEFAULT_FTP_PASS;
+        this.ftpPackagesPath = DEFAULT_HTTP_PACKAGES_PATH;
+        this.ftpExecutablesPath = DEFAULT_FTP_EXECUTABLES_PATH;
+        this.httpServerURL = DEFAULT_HTTP_SERVER_URL;
+        this.httpPackagesPath = DEFAULT_HTTP_PACKAGES_PATH;
     }
 
     public String getFtpServerURL() {

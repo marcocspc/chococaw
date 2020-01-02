@@ -17,14 +17,14 @@ public class ChocolateyDealer {
     private File chocolateyBinDir;
 
     public ChocolateyDealer() throws Exception {
-        if (this.isChocolateyInstalled()) {
+        if (ChocolateyDealer.isChocolateyInstalled()) {
             this.chocolateyBinDir = new File(System.getenv("ChocolateyInstall"));
         } else {
             throw new IOException("Chocolatey not installed!");
         }
     }
 
-    public boolean isChocolateyInstalled() {
+    public static boolean isChocolateyInstalled() {
         return System.getenv("ChocolateyInstall") != null;
     }
 

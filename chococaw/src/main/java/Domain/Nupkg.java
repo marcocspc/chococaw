@@ -6,6 +6,7 @@
 package Domain;
 
 import java.io.File;
+import java.util.ArrayList;
 
 /**
  *
@@ -15,7 +16,12 @@ public class Nupkg {
     private File dir;
     private File nupkg;
 
+    private Nuspec nuspec;
+    private ChocolateyInstall chocolateyInstall;
+
     public Nupkg() {
+	this.chocolateyInstall = new ChocolateyInstall("", "", "", "", "");
+	this.nuspec = new Nuspec("", "", "", "", "", "", "", "", "", "", false, "", "", new ArrayList()); 
     }
 
     public Nupkg(File dir, File nupkg) {
