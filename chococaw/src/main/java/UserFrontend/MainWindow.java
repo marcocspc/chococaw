@@ -5,8 +5,12 @@
  */
 package UserFrontend;
 
+import Domain.ChocolateyInstall;
 import Domain.Config;
 import Domain.Nupkg;
+import Domain.Nuspec;
+import OperationalSystemFrontend.FileDealer;
+import OperationalSystemFrontend.ZipDealer;
 import java.awt.AWTException;
 import java.awt.Color;
 import java.awt.Font;
@@ -21,8 +25,12 @@ import javax.swing.UnsupportedLookAndFeelException;
 import java.util.regex.Pattern;
 import java.awt.Robot;
 import java.awt.event.KeyEvent;
+import java.io.File;
+import java.io.IOException;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JFileChooser;
 
 /**
  *
@@ -62,6 +70,7 @@ public class MainWindow extends javax.swing.JFrame {
 
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		this.setLocationRelativeTo(null);
+		this.setDefaults();
 		this.setVisible(true);
 	}
 
@@ -462,7 +471,7 @@ public class MainWindow extends javax.swing.JFrame {
                         .addComponent(jScrollPane3)
                 );
 
-                newBtn.setText("New");
+                newBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/new.png"))); // NOI18N
                 newBtn.setMaximumSize(new java.awt.Dimension(100, 29));
                 newBtn.setMinimumSize(new java.awt.Dimension(100, 29));
                 newBtn.setPreferredSize(new java.awt.Dimension(100, 29));
@@ -472,17 +481,22 @@ public class MainWindow extends javax.swing.JFrame {
                         }
                 });
 
-                openBtn.setText("Open");
+                openBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/open.png"))); // NOI18N
                 openBtn.setMaximumSize(new java.awt.Dimension(100, 29));
                 openBtn.setMinimumSize(new java.awt.Dimension(100, 29));
                 openBtn.setPreferredSize(new java.awt.Dimension(100, 29));
+                openBtn.addActionListener(new java.awt.event.ActionListener() {
+                        public void actionPerformed(java.awt.event.ActionEvent evt) {
+                                openBtnActionPerformed(evt);
+                        }
+                });
 
-                saveBtn.setText("Save");
+                saveBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/save.png"))); // NOI18N
                 saveBtn.setMaximumSize(new java.awt.Dimension(100, 29));
                 saveBtn.setMinimumSize(new java.awt.Dimension(100, 29));
                 saveBtn.setPreferredSize(new java.awt.Dimension(100, 29));
 
-                sairBtn.setText("Exit");
+                sairBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/exit.png"))); // NOI18N
                 sairBtn.setMaximumSize(new java.awt.Dimension(100, 29));
                 sairBtn.setMinimumSize(new java.awt.Dimension(100, 29));
                 sairBtn.setPreferredSize(new java.awt.Dimension(100, 29));
@@ -492,7 +506,8 @@ public class MainWindow extends javax.swing.JFrame {
                         }
                 });
 
-                sendBtn.setText("Send");
+                sendBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/send.png"))); // NOI18N
+                sendBtn.setToolTipText("");
                 sendBtn.setPreferredSize(new java.awt.Dimension(100, 29));
                 sendBtn.addActionListener(new java.awt.event.ActionListener() {
                         public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -500,7 +515,7 @@ public class MainWindow extends javax.swing.JFrame {
                         }
                 });
 
-                exampleBtn.setText("Example");
+                exampleBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ex.png"))); // NOI18N
                 exampleBtn.setPreferredSize(new java.awt.Dimension(100, 29));
                 exampleBtn.addActionListener(new java.awt.event.ActionListener() {
                         public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -723,6 +738,106 @@ public class MainWindow extends javax.swing.JFrame {
         private void exampleBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exampleBtnActionPerformed
 		this.setExample();
         }//GEN-LAST:event_exampleBtnActionPerformed
+
+        private void openBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openBtnActionPerformed
+		int selectedOption = JOptionPane.showConfirmDialog(null,
+			"If you continue, all fields will be erased.",
+			"Are you sure?",
+			JOptionPane.YES_NO_OPTION);
+
+		if (selectedOption == JOptionPane.YES_OPTION) {
+			this.setDefaults();
+			JFileChooser chooser = new JFileChooser();
+			FileNameExtensionFilter ff = new FileNameExtensionFilter("Pacote Nuget", "nupkg");
+			chooser.addChoosableFileFilter(ff);
+			chooser.setAcceptAllFileFilterUsed(false);
+			chooser.showOpenDialog(this);
+
+			File toExtract = chooser.getSelectedFile();
+			File dirTemp = new File(System.getenv("TEMP") + "/packageOpen");
+
+			if (!(dirTemp.exists())) {
+				try {
+					dirTemp.mkdir();
+				} catch (Exception e) {
+					JOptionPane.showMessageDialog(null, e);
+				}
+			}
+
+			try {
+				ZipDealer zd = new ZipDealer(toExtract);
+				zd.unzip(dirTemp.getPath());
+
+				File dirTools = new File(dirTemp + "/tools");
+				File chocolateyInstall = new File(dirTools + "/chocolateyInstall.ps1");
+
+				File nuspec = null;
+				for (File listFile : dirTemp.listFiles()) {
+					if (listFile.getName().contains("nuspec")) {
+						nuspec = listFile;
+						break;
+					}
+				}
+
+				Nuspec nus = new Nuspec();
+				ChocolateyInstall choco = new ChocolateyInstall();
+
+				nus.applyFromFile(nuspec);
+				choco.applyFromFile(chocolateyInstall);
+				MainWindow.nupkg.setNuspec(nus);
+				MainWindow.nupkg.setChocolateyInstall(choco);
+
+				if (!(choco.isMadeOfCacau())) {
+					JOptionPane.showMessageDialog(this, "Warning! This file wasn't built using chococaw, errors may happen.");
+				}
+
+				idField.setText(MainWindow.nupkg.getNuspec().getId());
+				this.setFilledFont(idField);
+				titleField.setText(MainWindow.nupkg.getNuspec().getTitle());
+				this.setFilledFont(titleField);
+				versionField.setText(MainWindow.nupkg.getNuspec().getVersion());
+				this.setFilledFont(versionField);
+				authorsField.setText(MainWindow.nupkg.getNuspec().getAuthors());
+				this.setFilledFont(authorsField);
+				ownersField.setText(MainWindow.nupkg.getNuspec().getOwners());
+				this.setFilledFont(ownersField);
+				summaryField.setText(MainWindow.nupkg.getNuspec().getSummary());
+				this.setFilledFont(summaryField);
+				projectURLField.setText(MainWindow.nupkg.getNuspec().getProjectURL());
+				this.setFilledFont(projectURLField);
+				licenseURLField.setText(MainWindow.nupkg.getNuspec().getLicenseURL());
+				this.setFilledFont(licenseURLField);
+				iconURLField.setText(MainWindow.nupkg.getNuspec().getIconURL());
+				this.setFilledFont(iconURLField);
+				tagsField.setText(MainWindow.nupkg.getNuspec().getTags());
+				this.setFilledFont(tagsField);
+				installerTypeField.setText(MainWindow.nupkg.getChocolateyInstall().getInstallerType());
+				this.setFilledFont(installerTypeField);
+				unattendedArgumentsField.setText(MainWindow.nupkg.getChocolateyInstall().getUnattendedArgs());
+				this.setFilledFont(unattendedArgumentsField);
+				x86InstallerField.setText(MainWindow.nupkg.getChocolateyInstall().getUrl());
+				this.setFilledFont(x86InstallerField);
+				x64InstallerField.setText(MainWindow.nupkg.getChocolateyInstall().getUrl64());
+				this.setFilledFont(x64InstallerField);
+
+				for (Object dependency : MainWindow.nupkg.getNuspec().getDependencies()) {
+					String dep = (String) dependency;
+
+					if (dependenciesField.getText().equals("")) {
+						dependenciesField.setText(dep);
+						this.setFilledFont(dependenciesField);
+					} else {
+						dependenciesField.setText(dependenciesField.getText() + ", " + dep);
+					}
+				}
+
+				FileDealer fd = new FileDealer(dirTemp);
+				fd.forceRmdir();
+			} catch (IOException ex1) {
+				JOptionPane.showMessageDialog(null, ex1);
+			}
+		}
+        }//GEN-LAST:event_openBtnActionPerformed
 
 	/**
 	 * @param args the command line arguments

@@ -13,38 +13,53 @@ import java.util.ArrayList;
  * @author MarcoAntonio
  */
 public class Nupkg {
-    private File dir;
-    private File nupkg;
 
-    private Nuspec nuspec;
-    private ChocolateyInstall chocolateyInstall;
+	private File dir;
+	private File nupkg;
 
-    public Nupkg() {
-	this.chocolateyInstall = new ChocolateyInstall("", "", "", "", "");
-	this.nuspec = new Nuspec("", "", "", "", "", "", "", "", "", "", false, "", "", new ArrayList()); 
-    }
+	private Nuspec nuspec;
+	private ChocolateyInstall chocolateyInstall;
 
-    public Nupkg(File dir, File nupkg) {
-        this.dir = dir;
-        this.nupkg = nupkg;
-    }
-    
+	public Nupkg() {
+		this.chocolateyInstall = new ChocolateyInstall("", "", "", "", "");
+		this.nuspec = new Nuspec("", "", "", "", "", "", "", "", "", "", false, "", "", new ArrayList());
+	}
 
-    public File getDir() {
-        return dir;
-    }
+	public Nupkg(File dir, File nupkg) {
+		this.dir = dir;
+		this.nupkg = nupkg;
+	}
 
-    public void setDir(File dir) {
-        this.dir = dir;
-    }
+	public File getDir() {
+		return dir;
+	}
 
-    public File getNupkg() {
-        return nupkg;
-    }
+	public void setDir(File dir) {
+		this.dir = dir;
+	}
 
-    public void setNupkg(File nupkg) {
-        this.nupkg = nupkg;
-    }
-    
-    
+	public File getNupkg() {
+		return nupkg;
+	}
+
+	public void setNupkg(File nupkg) {
+		this.nupkg = nupkg;
+	}
+
+	public Nuspec getNuspec() {
+		return nuspec;
+	}
+
+	public void setNuspec(Nuspec nuspec) {
+		this.nuspec = nuspec;
+	}
+
+	public ChocolateyInstall getChocolateyInstall() {
+		return chocolateyInstall;
+	}
+
+	public void setChocolateyInstall(ChocolateyInstall chocolateyInstall) {
+		this.chocolateyInstall = chocolateyInstall;
+	}
+
 }
